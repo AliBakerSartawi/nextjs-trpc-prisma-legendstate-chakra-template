@@ -13,11 +13,11 @@ export const SaveShop = observer(() => {
   const shop = $store.shop.get();
   const products = $store.products.get();
   const modifiedShop = $store.modifications.shop.get();
-  const modifiedAssets = $store.modifications.products.get();
+  const modifiedProducts = $store.modifications.products.get();
 
   const hasChanges =
     !fastDeepEqual(shop, modifiedShop) ||
-    !fastDeepEqual(products, modifiedAssets);
+    !fastDeepEqual(products, modifiedProducts);
 
   const canSave = !!modifiedShop?.name;
 
