@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ------------------------------------------------------ //
+//                         Models                         //
+// ------------------------------------------------------ //
+model User {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  email    String  @unique
+  password String
+  shopId   String? @db.ObjectId
+  shop     Shop?   @relation(fields: [shopId], references: [id])
+
+  // To return `Date`s intact through the API we use transformers
+  // https://trpc.io/docs/data-transformers
+  // This is unique so it can be used for cursor-based pagination
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Shop {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique
+  slogan      String?
+  description String?
+  products    Product[]
+  users       User[] // Because many users can manage one Store
+}
+
+// ------------------------------------------------------ //
+//                          Types                         //
+// ------------------------------------------------------ //
+type Product {
+  type        ProductType
+  name        String
+  price       Float
+  description String?
+}
+
+// ------------------------------------------------------ //
+//                          Enums                         //
+// ------------------------------------------------------ //
+enum ProductType {
+  DIGITAL
+  PHYSICAL
+}
